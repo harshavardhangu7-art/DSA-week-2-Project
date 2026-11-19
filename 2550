@@ -1,0 +1,23 @@
+class Solution {
+    private static final int MOD = 1_000_000_007;
+
+    public int monkeyMove(int n) {
+        long totalWays = powMod(2, n);
+        // Subtract the 2 non-colliding configurations (all clockwise or all anticlockwise)
+        // Add MOD before taking % MOD to prevent a negative result
+        return (int) ((totalWays - 2 + MOD) % MOD);
+    }
+
+    private long powMod(long base, int exp) {
+        long result = 1;
+        base %= MOD;
+        while (exp > 0) {
+            if ((exp & 1) == 1) {
+                result = (result * base) % MOD;
+            }
+            base = (base * base) % MOD;
+            exp >>= 1;
+        }
+        return result;
+    }
+}
