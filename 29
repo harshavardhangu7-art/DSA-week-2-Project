@@ -1,0 +1,40 @@
+class Solution {
+    private static final int HALF_INT_MIN = -1073741824; // -2^30
+
+    public int divide(int dividend, int divisor) {
+        // Edge case: overflow occurs only when dividend = -2^31 and divisor = -1
+        if (dividend == Integer.MIN_VALUE && divisor == -1) {
+            return Integer.MAX_VALUE;
+        }
+
+        // Determine the sign of the result and convert both numbers to negative
+        // to avoid overflow when handling Integer.MIN_VALUE
+        boolean isNegative = (dividend < 0) ^ (divisor < 0);
+        if (dividend > 0) {
+            dividend = -dividend;
+        }
+        if (divisor > 0) {
+            divisor = -divisor;
+        }
+
+        int quotient = 0;
+
+        // Subtract the largest doubled multiples of divisor from dividend
+        while (dividend <= divisor) {
+            int value = divisor;
+            int powerOfTwo = -1;
+
+            // Double 'value' as long as it doesn't underflow and remains >= dividend
+            while (value >= HALF_INT_MIN && value + value >= dividend) {
+                value += value;
+                powerOfTwo += powerOfTwo;
+            }
+
+            quotient += powerOfTwo;
+            dividend -= value;
+        }
+
+        // Quotient was accumulated as a negative number; negate if result should be positive
+        return isNegative ? quotient : -quotient;
+    }
+}
